@@ -16,6 +16,19 @@ Install the dependencies:
 
 - [SimpleJson](http://cheeseshop.python.org/pypi/simplejson)
 
+Get the code:
+
+```
+git clone https://github.com/felipeborges/python-getpocket
+```
+
+And run:
+
+```
+$ cd python-getpocket
+$ python setup.py build
+$ python setup.py install
+
 ## Using
 
 To create an instance of the getpocket.API with login credentials:

@@ -28,6 +28,7 @@ And run:
 $ cd python-getpocket
 $ python setup.py build
 $ python setup.py install
+```
 
 ## Using
 

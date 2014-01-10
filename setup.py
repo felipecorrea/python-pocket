@@ -2,7 +2,7 @@
 #
 # vim: sw=4 ts=4 st=4
 #
-#  Copyright 2013 Felipe Borges <felipe10borges@gmail.com>
+#  Copyright 2014 Felipe Borges <felipe10borges@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

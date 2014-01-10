@@ -2,7 +2,7 @@
 #
 # vim: sw=4 ts=4 st=4
 #
-#  Copyright 2013 Felipe Borges <felipe10borges@gmail.com>
+#  Copyright 2014 Felipe Borges <felipe10borges@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -60,8 +60,6 @@ def get_access_token(consumer_key, redirect_uri = REDIRECT_URI):
     parameters = {
             'consumer_key' : consumer_key,
             'code' : request_token }
-        
-    headers = { 'X-Accept': 'application/json' }
 
     request = urllib2.Request(AUTHORIZE_REQUEST_TOKEN, urllib.urlencode(parameters), headers)
     resp = urllib2.urlopen(request)

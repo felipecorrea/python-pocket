@@ -2,7 +2,7 @@
 #
 # vim: sw=4 ts=4 st=4
 #
-#  Copyright 2013 Felipe Borges <felipe10borges@gmail.com>
+#  Copyright 2014 Felipe Borges <felipe10borges@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ __version__ = '0.1'
 import urllib
 import urllib2
 import simplejson
-import webbrowser
+import sys
 
 REQUEST_URI = 'http://github.com/felipeborges'
 
@@ -135,9 +135,9 @@ class Api(object):
     ''' Pocket API '''
     def __init__(self, consumer_key = None, access_token = None, redirect_uri = REQUEST_URI):
         if consumer_key is not None and access_token is None:
-            print 'Pocket requires an Authentication Token for API calls.'
-            print 'If you are using this library from a command line utility, please'
-            print 'run the included get_access_token.py tool to generate one.'
+            print >> sys.stderr, 'Pocket requires an Authentication Token for API calls.'
+            print >> sys.stderr,  'If you are using this library from a command line utility, please'
+            print >> sys.stderr,  'run the included get_access_token.py tool to generate one.'
 
             raise PocketError('Pocket requires an Authentication Token for all API access')
 

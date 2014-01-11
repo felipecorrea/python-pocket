@@ -7,10 +7,10 @@ __author__ = 'Felipe Borges'
 import sys
 import getopt
 
-import getpocket
+import pocket
 from get_access_token import get_access_token
 
-USAGE = '''Usage: add_getpocket [options] url
+USAGE = '''Usage: add_pocket [options] url
 
 	This script adds an Item to Pocket.
 
@@ -49,7 +49,7 @@ def main():
 	if not url or not consumer_key or not access_token:
 		print_usage_and_exit()
 
-	api = getpocket.Api(consumer_key = consumer_key, access_token = access_token)
+	api = pocket.Api(consumer_key = consumer_key, access_token = access_token)
 
 	try:
 		item = api.add(url)

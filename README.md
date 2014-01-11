@@ -25,19 +25,19 @@ git clone https://github.com/felipeborges/python-getpocket
 And run:
 
 ```
-$ cd python-getpocket
+$ cd python-pocket
 $ python setup.py build
 $ python setup.py install
 ```
 
 ## Using
 
-To create an instance of the getpocket.API with login credentials:
+To create an instance of the pocket.API with login credentials:
 
 ```
->>> import getpocket
->>> api = getpocket.Api(consumer_key='consumer_key',
-						access_token='access_token')
+>>> import pocket
+>>> api = pocket.Api(consumer_key='consumer_key',
+                     access_token='access_token')
 ```
 
 To add an Item to your Pocket list:

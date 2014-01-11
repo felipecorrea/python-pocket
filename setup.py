@@ -20,14 +20,14 @@ __author__ = 'felipe10borges@gmail.com'
 __version__ = '0.1'
 
 METADATA = dict(
-    name = "python-getpocket",
+    name = "python-pocket",
     version = __version__,
-    py_modules = ['getpocket'],
+    py_modules = ['pocket'],
     author = 'Felipe Borges',
     author_email = 'felipe10borges@gmail.com',
     description = 'A Python wrapper around the Pocket API.',
     license = 'Apache License 2.0',
-    url = 'https://github.com/felipeborges/python-getpocket',
+    url = 'https://github.com/felipeborges/python-pocket',
     keywords = 'getpocket pocket api',
 )
 

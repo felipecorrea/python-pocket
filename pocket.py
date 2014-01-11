@@ -26,8 +26,6 @@ import urllib2
 import simplejson
 import sys
 
-REQUEST_URI = 'http://github.com/felipeborges/python-getpocket'
-
 class ItemsList(object):
     '''A Class representing a user's Pocket list.'''
     def __init__(self, items, status = None):
@@ -36,11 +34,11 @@ class ItemsList(object):
 
     def __getitem__(self, item_id):
         return self._items[item_id]
-        
+
     def __iter__(self):
         for item in self._items.items():
             yield item[1]
-            
+
     def __len__(self):
         return len(self._items.items())
 
@@ -103,7 +101,7 @@ class Item(object):
 
         for (param, default) in param_defaults.iteritems():
             setattr(self, param, kwargs.get(param, default))
-            
+
 class PocketError(Exception):
     def __init__(self, reason, response = None):
         self.reason = unicode(reason)
@@ -117,7 +115,7 @@ class Api(object):
     REQUEST_HEADERS = { 'X-Accept': 'application/json' }
 
     ''' Pocket API '''
-    def __init__(self, consumer_key = None, access_token = None, redirect_uri = REQUEST_URI):
+    def __init__(self, consumer_key = None, access_token = None):
         if consumer_key is not None and access_token is None:
             print >> sys.stderr, 'Pocket requires an Authentication Token for API calls.'
             print >> sys.stderr,  'If you are using this library from a command line utility, please'
@@ -152,7 +150,7 @@ class Api(object):
                 the original tweet alongside the article.
 
         Returns:
-            A getpocket.Item instance.
+            A pocket.Item instance.
         '''
         params = {
             'consumer_key' : self._consumer_key,
@@ -193,7 +191,7 @@ class Api(object):
                 A JSON dict, as converted from the JSON in the Pocket API
 
         Returns:
-            A getpocket.Item instance
+            A pocket.Item instance
         '''
         item = data['item']
         status = data['status']
@@ -257,7 +255,7 @@ class Api(object):
                 'complete': return all data about each item, including tags,
                 images, authors, videos and more.
         Returns:
-            A getpocket.ItemsList instance.
+            A pocket.ItemsList instance.
         '''
         param_defaults = {
             'state' : None,

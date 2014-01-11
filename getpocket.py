@@ -28,6 +28,17 @@ import sys
 
 REQUEST_URI = 'http://github.com/felipeborges'
 
+class ItemsList(object):
+    '''A Class representing a user's Pocket list.'''
+    def __init__(self, items):
+        self._items = items
+
+    def __getitem__(self, item_id):
+        return self._items[item_id]
+
+    def getItem(self, item_id):
+        return self._items[item_id]
+
 class Item(object):
     '''A Class representing a saved item.
 
@@ -84,41 +95,6 @@ class Item(object):
 
         for (param, default) in param_defaults.iteritems():
             setattr(self, param, kwargs.get(param, default))
-
-    def get_id(self):
-        '''Get the unique identifier of this item.
-
-        Returns:
-            The unique id of this item.
-        '''
-        return self._id
-
-    def set_id(self, id):
-        '''Set the unique identifeir of this item.
-
-        Args:
-            id: 
-                The unique id of this item.
-        '''
-        self._id = id
-
-    def get_normal_url(self):
-        '''Get the original url of this item.
-
-        Returns:
-            The original url for this item.
-        '''
-        return self._normal_url
-
-    def get_resolved_id(self):
-        '''Get the unique identifier of this resolved item.
-
-        Returns:
-            The resolved id of this item.
-        '''
-        return self._resolved_id
-
-
 
 class PocketError(Exception):
     def __init__(self, reason, response = None):
@@ -198,10 +174,10 @@ class Api(object):
 
         json_response = simplejson.loads(resp.read())
 
-        return self.new_from_json_dict(json_response)
+        return self.new_item_from_json_dict(json_response)
 
     @staticmethod
-    def new_from_json_dict(data):
+    def new_item_from_json_dict(data):
         '''Create a new instanced based on a JSON dict.
 
         Args:
@@ -236,3 +212,96 @@ class Api(object):
                     authors = item.get('authors'),
                     images = item.get('images'),
                     videos = item.get('videos'))
+
+    def get(self, **kwargs):
+        '''Retrieve item(s) from a user's Pocket list.
+
+        A few examples of the types of requests you can make:
+            - Retrieve a user's list of unread items.
+            - Sync data that has changed since the last time your app checked.
+            - Retrieve paged results sorted by the most recent saves.
+            - Retrieve just videos that the user has saved.
+            - Search for a given keyword in item's title and url.
+            - Retrieve all items for a given domain.
+
+        Args:
+            state:
+                'unread': only return unread items (default).
+                'archive': only return archived items.
+                'all': return both unread and archived items.
+            favorite:
+                '0': only return un-favorited items.
+                '1': only return favorited items.
+            tag:
+                'tag_name': only return items tagged with tag_name.
+                '_untagged_': only return untagged items.
+            contentType:
+                'article': only return articles
+                'video': only return videos or articles with embedded videos.
+                'image': only return images.
+            sort:
+                'newest': return items in order of newest to oldest.
+                'oldest': return items in order of oldest to newest.
+                'title': return items in order of title alphabetically.
+                'site': return items in order of url alphabetically.
+            detailType:
+                'simple': only return the titles and urls of each item.
+                'complete': return all data about each item, including tags,
+                images, authors, videos and more.
+        Returns:
+            A getpocket.ItemsList instance.
+        '''
+        param_defaults = {
+            'state' : None,
+            'favorite' : None,
+            'tag' : None,
+            'contentType' : None,
+            'sort' : None,
+            'detailType' : None,
+            'search' : None,
+            'domain' : None,
+            'since' : None,
+            'count' : None,
+            'offset' : None,
+        }
+
+        params = {
+            'consumer_key' : self._consumer_key,
+            'access_token' : self._access_token
+        }
+
+        for (param, default) in param_defaults.iteritems():
+            if kwargs.get(param, default) is not None:
+                params[param] = kwargs.get(param, default)
+
+        request = self._create_request('get', params)
+
+        try:
+            resp = urllib2.urlopen(request)
+        except Exception, e:
+            raise PocketError(e)
+
+        json_response = simplejson.loads(resp.read())
+
+        return self.new_items_list_from_json_dict(json_response)
+
+    @staticmethod
+    def new_items_list_from_json_dict(data):
+        status = data['status']
+        items_list = {}
+
+        for item in data['list'].items():
+            items_list[item[1].get('item_id')] = (Item(id = item[1].get('item_id'),
+                                                   resolved_id = item[1].get('resolved_id'),
+                                                   resolved_url = item[1].get('resolved_url'),
+                                                   title = item[1].get('resolved_title'),
+                                                   excerpt = item[1].get('excerpt'),
+                                                   is_article = item[1].get('is_article'),
+                                                   has_image = item[1].get('has_image'),
+                                                   has_video = item[1].get('has_video'),
+                                                   word_count = item[1].get('word_count'),
+                                                   authors = item[1].get('authors'),
+                                                   images = item[1].get('images'),
+                                                   videos = item[1].get('videos')))
+
+        return ItemsList(items_list)

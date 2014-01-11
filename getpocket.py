@@ -26,17 +26,25 @@ import urllib2
 import simplejson
 import sys
 
-REQUEST_URI = 'http://github.com/felipeborges'
+REQUEST_URI = 'http://github.com/felipeborges/python-getpocket'
 
 class ItemsList(object):
     '''A Class representing a user's Pocket list.'''
-    def __init__(self, items):
+    def __init__(self, items, status = None):
         self._items = items
+        self.status = status
 
     def __getitem__(self, item_id):
         return self._items[item_id]
+        
+    def __iter__(self):
+        for item in self._items.items():
+            yield item[1]
+            
+    def __len__(self):
+        return len(self._items.items())
 
-    def getItem(self, item_id):
+    def get_item_by_id(self, item_id):
         return self._items[item_id]
 
 class Item(object):
@@ -95,7 +103,7 @@ class Item(object):
 
         for (param, default) in param_defaults.iteritems():
             setattr(self, param, kwargs.get(param, default))
-
+            
 class PocketError(Exception):
     def __init__(self, reason, response = None):
         self.reason = unicode(reason)
@@ -292,16 +300,16 @@ class Api(object):
 
         for item in data['list'].items():
             items_list[item[1].get('item_id')] = (Item(id = item[1].get('item_id'),
-                                                   resolved_id = item[1].get('resolved_id'),
-                                                   resolved_url = item[1].get('resolved_url'),
-                                                   title = item[1].get('resolved_title'),
-                                                   excerpt = item[1].get('excerpt'),
-                                                   is_article = item[1].get('is_article'),
-                                                   has_image = item[1].get('has_image'),
-                                                   has_video = item[1].get('has_video'),
-                                                   word_count = item[1].get('word_count'),
-                                                   authors = item[1].get('authors'),
-                                                   images = item[1].get('images'),
-                                                   videos = item[1].get('videos')))
+                                                       resolved_id = item[1].get('resolved_id'),
+                                                       resolved_url = item[1].get('resolved_url'),
+                                                       title = item[1].get('resolved_title'),
+                                                       excerpt = item[1].get('excerpt'),
+                                                       is_article = item[1].get('is_article'),
+                                                       has_image = item[1].get('has_image'),
+                                                       has_video = item[1].get('has_video'),
+                                                       word_count = item[1].get('word_count'),
+                                                       authors = item[1].get('authors'),
+                                                       images = item[1].get('images'),
+                                                       videos = item[1].get('videos')))
 
-        return ItemsList(items_list)
+        return ItemsList(items_list, status)

@@ -50,13 +50,33 @@ To add an Item to your Pocket list:
 >>> print item.title
 ```
 
-To get the user's Pocket list:
+To get the user's Pocket list, run:
 
 ```
 >>> items_list = api.get()
->>> for item in intems_list:
+>>> for item in items_list:
 >>>     print "%s (%s)" % (item.title, item.resolved_url)
 ```
+
+A few examples of the types of requests you can make:
+
+- Retrieve a user's list of unread items.
+- Sync data that has changed since the last time your app checked.
+- Retrieve paged results sorted by the most recent saves.
+- Retrieve just videos that the user has saved.
+- Search for a given keyword in item's title and url.
+- Retrieve all items for a given domain.
+
+You can filter the **get()** results by passing these parameters:
+
+- **state** = 'unread', 'archive' or 'all'.
+- **favorite** = '0' or '1' to return un-favorited items or favorite items respectively.
+- **tag** = 'tag-name' or '_untagged_'.
+- **contentType** = 'article', 'video' or 'image'.
+- **sort** = 'newest', 'oldest', 'title' or 'site'.
+- **detailType** = 'simple' or 'complete'.
+
+Run _pydoc pocket.Api.get_ to obtain more info.
 
 ## Todo
 

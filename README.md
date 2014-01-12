@@ -32,7 +32,9 @@ $ python setup.py install
 
 ## Using
 
-To create an instance of the pocket.API with login credentials:
+**get_access_token.py**: Is a tool to obtain an Authentication token for API calls.
+
+To create an instance of the pocket.API with login credentials, run:
 
 ```
 >>> import pocket
@@ -43,12 +45,18 @@ To create an instance of the pocket.API with login credentials:
 To add an Item to your Pocket list:
 
 ```
->>> item = api.add('url')
+>>> item = api.add('https://www.google.com/culturalinstitute/exhibit/nelson-mandela-negotiating-for-democracy/gRl9f-1K')
 >>> print item.id
 >>> print item.title
 ```
 
-**get_access_token.py**: Is a tool to obtain an Authentication token for API calls.
+To get the user's Pocket list:
+
+```
+>>> items_list = api.get()
+>>> for item in intems_list:
+>>>     print "%s (%s)" % (item.title, item.resolved_url)
+```
 
 ## Todo
 

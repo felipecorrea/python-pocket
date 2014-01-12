@@ -19,7 +19,7 @@ Install the dependencies:
 Get the code:
 
 ```
-git clone https://github.com/felipeborges/python-getpocket
+git clone https://github.com/felipeborges/python-pocket
 ```
 
 And run:

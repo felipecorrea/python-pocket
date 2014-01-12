@@ -5,21 +5,21 @@
 __author__ = 'Felipe Borges'
 
 import sys
+sys.path.append("..")
 import getopt
 
 import pocket
 from get_access_token import get_access_token
 
-USAGE = '''Usage: add_pocket [options] url
+USAGE = '''Usage: save_to_pocket [options] url
 
-	This script adds an Item to Pocket.
+  This script adds an Item to Pocket.
 
-	Options:
+  Options:
 
-		-h --help: print this help
-		--consumer_key : the Pocket API consumer key
-		--access_token : the user's Pocket Access Token
-
+    -h --help: print this help
+    --consumer_key : the Pocket API consumer key
+    --access_token : the user's Pocket Access Token
 	'''
 
 def print_usage_and_exit():
@@ -53,7 +53,7 @@ def main():
 
 	try:
 		item = api.add(url)
-		print 'Item \'%s\' added successfuly!' % item.title
+		print 'Item \'%s\' added successfuly!' % item.normal_url
 	except e:
 		print e
 		sys.exit(2)

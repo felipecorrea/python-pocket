@@ -25,7 +25,7 @@ REQUEST_TOKEN_URL = 'https://getpocket.com/v3/oauth/request'
 AUTHORIZE_REQUEST_URL = "https://getpocket.com/auth/authorize"
 AUTHORIZE_REQUEST_TOKEN = 'https://getpocket.com/v3/oauth/authorize'
 
-REDIRECT_URI = 'http://github.com/felipeborges/python-pocket'
+REDIRECT_URI = 'http://goo.gl/kGuI6g'
 
 def get_access_token(consumer_key, redirect_uri = REDIRECT_URI):
     parameters = {

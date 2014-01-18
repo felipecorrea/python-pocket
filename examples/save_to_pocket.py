@@ -9,7 +9,6 @@ sys.path.append("..")
 import getopt
 
 import pocket
-from get_access_token import get_access_token
 
 USAGE = '''Usage: save_to_pocket [options] url
 

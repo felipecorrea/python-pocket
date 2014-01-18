@@ -9,7 +9,6 @@ sys.path.append("..")
 import getopt
 
 import pocket
-from get_access_token import get_access_token
 
 USAGE = '''Usage: get_favorites [options]
 

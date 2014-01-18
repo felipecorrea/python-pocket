@@ -311,3 +311,21 @@ class Api(object):
                                                        videos = item[1].get('videos')))
 
         return ItemsList(items_list, status)
+
+    def send(self, actions):
+        params = {
+            'consumer_key' : self._consumer_key,
+            'access_token' : self._access_token,
+            'actions' : actions
+        }
+
+        request = self._create_request('send', params)
+
+        try:
+            resp = urllib2.urlopen(request)
+        except Exception, e:
+            raise PocketError(e)
+
+        json_response = simplejson.loads(resp.read())
+
+        return json_response['action_results']

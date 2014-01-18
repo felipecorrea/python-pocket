@@ -301,6 +301,15 @@ class Api(object):
         return ItemsList(items_list, status)
 
     def send(self, actions):
+        '''Send allows you to make a change or batch several changes to a user’s 
+        list or Pocket data.
+
+        Args:
+             actions:
+                A list of actions as a JSON array.
+        Returns:
+            A list of boolean results for each action.
+        '''
         self.params['actions'] = actions
 
         json_response = self._make_request('send')

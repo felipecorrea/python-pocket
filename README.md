@@ -32,15 +32,19 @@ $ python setup.py install
 
 ## Using
 
-**get_access_token.py**: Is a tool to obtain an Authentication token for API calls.
+Run the **get_access_token.py** tool to obtain an Authentication token for API calls.
 
-To create an instance of the pocket.API with login credentials, run:
+In order to create an instance of the pocket.API with login credentials, run:
 
 ```
 >>> import pocket
 >>> api = pocket.Api(consumer_key='consumer_key',
                      access_token='access_token')
 ```
+
+### Adding Items to Pocket
+
+**Required Permissions**: In order to use the /v3/add endpoint, your consumer key must have the "Add" permission.
 
 To add an Item to your Pocket list:
 
@@ -50,12 +54,55 @@ To add an Item to your Pocket list:
 >>> print item.title
 ```
 
+### Modifying a User's Pocket Data
+
+**Required Permissions**: In order to use the /v3/send endpoint, your consumer key must have the "Modify" permission.
+
+To batch several actions to a user's changes, run:
+
+```
+>>> actions = api.send('[
+    {
+        "action" : "archive",
+        "item_id" : "229279689",
+        "time"   : "1348853312"
+    }
+]')
+>>> for action in actions:
+         print (action)
+```
+
+You can send one action or you can send dozens. The list of actions should be sent as a JSON array. The response you receive back contains a list that indicates which action had an issue if the status is False (indicating failure).
+
+#### List of actions
+
+**Basic Actions**
+
+- [add](http://getpocket.com/developer/docs/v3/modify#action_add): Add a new item to the user's list.
+- [archive](http://getpocket.com/developer/docs/v3/modify#action_archive): Move an item to the user's archive.
+- [readd](http://getpocket.com/developer/docs/v3/modify#action_readd): Re-add (unarchive) an item to the user's list.
+- [favorite](http://getpocket.com/developer/docs/v3/modify#action_favorite): Mark an item as a favorite.
+- [unfavorite](http://getpocket.com/developer/docs/v3/modify#action_unfavorite): Remove an item from the user's favorites.
+- [delete](http://getpocket.com/developer/docs/v3/modify#action_delete): Permanently remove an item from the user's account.
+
+**Tagging Actions**
+
+- [tags_add](http://getpocket.com/developer/docs/v3/modify#action_tags_add): Add one or more tags to an item.
+- [tags_remove](http://getpocket.com/developer/docs/v3/modify#action_tags_remove): Remove one or more tags from an item.
+- [tags_replace](http://getpocket.com/developer/docs/v3/modify#action_tags_replace): Replace all of the tags for an item with one or more provided tags.
+- [tags_clear](http://getpocket.com/developer/docs/v3/modify#action_tags_clear): Remove all tags from an item.
+- [tag_rename](http://getpocket.com/developer/docs/v3/modify#action_tag_rename): Rename a tag; this affects all items with this tag.
+
+### Retrieving a User's Pocket Data
+
+**Required Permissions**: In order to use the /v3/get endpoint, your consumer key must have the "Retrieve" permission.
+
 To get the user's Pocket list, run:
 
 ```
 >>> items_list = api.get()
 >>> for item in items_list:
->>>     print "%s (%s)" % (item.title, item.resolved_url)
+         print "%s (%s)" % (item.title, item.resolved_url)
 ```
 
 A few examples of the types of requests you can make:
@@ -77,11 +124,6 @@ You can filter the **get()** results by passing these parameters:
 - **detailType** = 'simple' or 'complete'.
 
 Run _pydoc pocket.Api.get_ to obtain more info.
-
-## Todo
-
-- pip install
-- modify & retrieve methods
 
 ## License
 

@@ -116,6 +116,7 @@ class Api(object):
 
     ''' Pocket API '''
     def __init__(self, consumer_key = None, access_token = None):
+        self.params = {}
         if consumer_key is not None and access_token is None:
             print >> sys.stderr, 'Pocket requires an Authentication Token for API calls.'
             print >> sys.stderr,  'If you are using this library from a command line utility, please'
@@ -129,8 +130,18 @@ class Api(object):
         self._consumer_key = consumer_key
         self._access_token = access_token
 
-    def _create_request(self, method, params):
-        return urllib2.Request(Api.METHOD_URL + method, urllib.urlencode(params), Api.REQUEST_HEADERS)
+        self.params['consumer_key'] = self._consumer_key
+        self.params['access_token'] = self._access_token
+
+    def _make_request(self, method):
+        request = urllib2.Request(Api.METHOD_URL + method, urllib.urlencode(self.params), Api.REQUEST_HEADERS)
+
+        try:
+            resp = urllib2.urlopen(request)
+        except Exception, e:
+            raise PocketError(e)
+
+        return simplejson.loads(resp.read())
 
     def add(self, url, title = None, tags = None, tweet_id = None):
         '''Add a Single Item to a user's Pocket list
@@ -152,33 +163,22 @@ class Api(object):
         Returns:
             A pocket.Item instance.
         '''
-        params = {
-            'consumer_key' : self._consumer_key,
-            'access_token' : self._access_token,
-            'url' : url
-        }
+        self.params['url'] = url
 
         if title is not None:
-            params['title'] = title
+            self.params['title'] = title
 
         if tags is not None:
             tag_str = ''
             for tag in tags:
                 tag_str += tag + ','
 
-            params['tags'] = tag_str
+            self.params['tags'] = tag_str
 
         if tweet_id is not None:
-            params['tweet_id'] = tweet_id
+            self.params['tweet_id'] = tweet_id
 
-        request = self._create_request('add', params)
-
-        try:
-            resp = urllib2.urlopen(request)
-        except Exception, e:
-            raise PocketError(e)
-
-        json_response = simplejson.loads(resp.read())
+        json_response = self._make_request('add')
 
         return self.new_item_from_json_dict(json_response)
 
@@ -271,23 +271,11 @@ class Api(object):
             'offset' : None,
         }
 
-        params = {
-            'consumer_key' : self._consumer_key,
-            'access_token' : self._access_token
-        }
-
         for (param, default) in param_defaults.iteritems():
             if kwargs.get(param, default) is not None:
-                params[param] = kwargs.get(param, default)
+                self.params[param] = kwargs.get(param, default)
 
-        request = self._create_request('get', params)
-
-        try:
-            resp = urllib2.urlopen(request)
-        except Exception, e:
-            raise PocketError(e)
-
-        json_response = simplejson.loads(resp.read())
+        json_response = self._make_request('get')
 
         return self.new_items_list_from_json_dict(json_response)
 
@@ -313,19 +301,8 @@ class Api(object):
         return ItemsList(items_list, status)
 
     def send(self, actions):
-        params = {
-            'consumer_key' : self._consumer_key,
-            'access_token' : self._access_token,
-            'actions' : actions
-        }
+        self.params['actions'] = actions
 
-        request = self._create_request('send', params)
-
-        try:
-            resp = urllib2.urlopen(request)
-        except Exception, e:
-            raise PocketError(e)
-
-        json_response = simplejson.loads(resp.read())
+        json_response = self._make_request('send')
 
         return json_response['action_results']

@@ -53,7 +53,7 @@ def main():
 		favorites = api.get(favorite = 1)
 		for favorite in favorites:
 			print ("%s (%s)" % (favorite.title, favorite.resolved_url))
-	except e:
+	except Exception, e:
 		print e
 		sys.exit(2)
 

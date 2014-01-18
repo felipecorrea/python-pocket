@@ -116,7 +116,6 @@ class Api(object):
 
     ''' Pocket API '''
     def __init__(self, consumer_key = None, access_token = None):
-        self.params = {}
         if consumer_key is not None and access_token is None:
             print >> sys.stderr, 'Pocket requires an Authentication Token for API calls.'
             print >> sys.stderr,  'If you are using this library from a command line utility, please'
@@ -130,11 +129,8 @@ class Api(object):
         self._consumer_key = consumer_key
         self._access_token = access_token
 
-        self.params['consumer_key'] = self._consumer_key
-        self.params['access_token'] = self._access_token
-
-    def _make_request(self, method):
-        request = urllib2.Request(Api.METHOD_URL + method, urllib.urlencode(self.params), Api.REQUEST_HEADERS)
+    def _make_request(self, method, params):
+        request = urllib2.Request(Api.METHOD_URL + method, urllib.urlencode(params), Api.REQUEST_HEADERS)
 
         try:
             resp = urllib2.urlopen(request)
@@ -163,22 +159,26 @@ class Api(object):
         Returns:
             A pocket.Item instance.
         '''
-        self.params['url'] = url
+        params = {
+            'consumer_key' : self._consumer_key,
+            'access_token' : self._access_token,
+            'url' : url
+        }
 
         if title is not None:
-            self.params['title'] = title
+            params['title'] = title
 
         if tags is not None:
             tag_str = ''
             for tag in tags:
                 tag_str += tag + ','
 
-            self.params['tags'] = tag_str
+            params['tags'] = tag_str
 
         if tweet_id is not None:
-            self.params['tweet_id'] = tweet_id
+            params['tweet_id'] = tweet_id
 
-        json_response = self._make_request('add')
+        json_response = self._make_request('add', params)
 
         return self.new_item_from_json_dict(json_response)
 
@@ -271,11 +271,16 @@ class Api(object):
             'offset' : None,
         }
 
+        params = {
+            'consumer_key' : self._consumer_key,
+            'access_token' : self._access_token,
+        }
+
         for (param, default) in param_defaults.iteritems():
             if kwargs.get(param, default) is not None:
-                self.params[param] = kwargs.get(param, default)
+                params[param] = kwargs.get(param, default)
 
-        json_response = self._make_request('get')
+        json_response = self._make_request('get', params)
 
         return self.new_items_list_from_json_dict(json_response)
 
@@ -310,8 +315,12 @@ class Api(object):
         Returns:
             A list of boolean results for each action.
         '''
-        self.params['actions'] = actions
+        params = {
+            'consumer_key' : self._consumer_key,
+            'access_token' : self._access_token,
+            'actions' : actions
+        }
 
-        json_response = self._make_request('send')
+        json_response = self._make_request('send', params)
 
         return json_response['action_results']

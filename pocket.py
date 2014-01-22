@@ -21,8 +21,8 @@
 __author__ = 'felipe10borges@gmail.com'
 __version__ = '0.1'
 
-import urllib
-import urllib2
+import urllib.request
+import urllib.parse
 import simplejson
 import sys
 
@@ -99,12 +99,12 @@ class Item(object):
             'videos' : None,
         }
 
-        for (param, default) in param_defaults.iteritems():
+        for (param, default) in param_defaults.items():
             setattr(self, param, kwargs.get(param, default))
 
 class PocketError(Exception):
     def __init__(self, reason, response = None):
-        self.reason = unicode(reason)
+        self.reason = reason
         self.response = response
 
     def __str__(self):
@@ -116,7 +116,7 @@ class Api(object):
 
     ''' Pocket API '''
     def __init__(self, consumer_key = None, access_token = None):
-        if consumer_key is not None and access_token is None:
+        if consumer_key is None and access_token is None:
             print >> sys.stderr, 'Pocket requires an Authentication Token for API calls.'
             print >> sys.stderr,  'If you are using this library from a command line utility, please'
             print >> sys.stderr,  'run the included get_access_token.py tool to generate one.'
@@ -130,14 +130,15 @@ class Api(object):
         self._access_token = access_token
 
     def _make_request(self, method, params):
-        request = urllib2.Request(Api.METHOD_URL + method, urllib.urlencode(params), Api.REQUEST_HEADERS)
+        data = urllib.parse.urlencode(params)
+        request = urllib.request.Request(Api.METHOD_URL + method, data.encode('ascii'), Api.REQUEST_HEADERS)
 
         try:
-            resp = urllib2.urlopen(request)
-        except Exception, e:
+            resp = urllib.request.urlopen(request)
+        except Exception as e:
             raise PocketError(e)
 
-        return simplejson.loads(resp.read())
+        return simplejson.loads(resp.read().decode('utf-8'))
 
     def add(self, url, title = None, tags = None, tweet_id = None):
         '''Add a Single Item to a user's Pocket list
@@ -276,7 +277,7 @@ class Api(object):
             'access_token' : self._access_token,
         }
 
-        for (param, default) in param_defaults.iteritems():
+        for (param, default) in param_defaults.items():
             if kwargs.get(param, default) is not None:
                 params[param] = kwargs.get(param, default)
 
@@ -306,7 +307,7 @@ class Api(object):
         return ItemsList(items_list, status)
 
     def send(self, actions):
-        '''Send allows you to make a change or batch several changes to a user’s 
+        '''Send allows you to make a change or batch several changes to a user's 
         list or Pocket data.
 
         Args:
